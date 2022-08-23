@@ -9,6 +9,7 @@ import React, {
 import { generateRandom } from "expo-auth-session/build/PKCE";
 
 import { api } from "../services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface User {
   id: number;
@@ -18,7 +19,7 @@ interface User {
 }
 
 interface AuthContextData {
-  user: User;
+  user: User | null;
   isLoggingOut: boolean;
   isLoggingIn: boolean;
   signIn: () => Promise<void>;
@@ -39,8 +40,11 @@ const twitchEndpoints = {
 function AuthProvider({ children }: AuthProviderData) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [user, setUser] = useState({} as User);
+  const [user, setUser] = useState<User | null>(null);
   const [userToken, setUserToken] = useState("");
+
+  const userKey = "@streamdata:user";
+  const tokenKey = "@streamdata:token";
 
   // get CLIENT_ID from environment variables
   const { CLIENT_ID } = process.env;
@@ -91,11 +95,14 @@ function AuthProvider({ children }: AuthProviderData) {
         // call Twitch API's users route
         const userResponse = await api.get("/users");
 
+        const userData = userResponse.data.data[0];
         // set user state with response from Twitch API's route "/users"
-        setUser(userResponse.data.data[0]);
+        setUser(userData);
+        await AsyncStorage.setItem(userKey, JSON.stringify(userData));
 
         // set userToken state with response's access_token from startAsync
         setUserToken(authResponse.params.access_token);
+        await AsyncStorage.setItem(tokenKey, authResponse.params.access_token);
       }
     } catch (error) {
       // throw an error
@@ -117,20 +124,34 @@ function AuthProvider({ children }: AuthProviderData) {
       );
     } catch (error) {
     } finally {
-      // set user state to an empty User object
-      setUser({} as User);
+      await AsyncStorage.removeItem(userKey);
+      await AsyncStorage.removeItem(tokenKey);
+      // remove "access_token" from request's authorization header
+
       // set userToken state to an empty string
       setUserToken("");
-      // remove "access_token" from request's authorization header
       delete api.defaults.headers.common["Authorization"];
       // set isLoggingOut to false
       setIsLoggingOut(false);
+      // set user state to an empty User object
+      setUser(null);
     }
   }
 
   useEffect(() => {
     // add client_id to request's "Client-Id" header
     api.defaults.headers.common["Client-Id"] = CLIENT_ID!;
+
+    async function getUserDataFromStorage() {
+      const userResponse = await AsyncStorage.getItem(userKey);
+      const tokenData = await AsyncStorage.getItem(tokenKey);
+      const userData = JSON.parse(userResponse!) ?? null;
+      setUser(userData);
+      setUserToken(tokenData ?? "");
+      api.defaults.headers.common["Authorization"] = `Bearer ${tokenData}`;
+    }
+
+    getUserDataFromStorage();
   }, []);
 
   return (

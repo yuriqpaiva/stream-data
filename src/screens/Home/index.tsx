@@ -107,7 +107,7 @@ export function Home() {
   async function getUserFollowedStreams() {
     try {
       const response = await api.get<{ data: UserFollowedStreams[] }>(
-        `/streams/followed?user_id=${user.id}`
+        `/streams/followed?user_id=${user?.id}`
       );
 
       const formattedResponse = await getUserFollowedStreamsAvatar(
@@ -127,9 +127,11 @@ export function Home() {
   }
 
   useEffect(() => {
-    getTopGames();
-    getUserFollowedStreams();
-  }, []);
+    if (user) {
+      getTopGames();
+      getUserFollowedStreams();
+    }
+  }, [user]);
 
   const signOutButtonProps = {
     onPress: handleSignOut,
@@ -152,11 +154,11 @@ export function Home() {
     >
       <Header>
         <UserInfo>
-          <Avatar source={{ uri: user.profile_image_url }} />
+          <Avatar source={{ uri: user?.profile_image_url }} />
 
           <UserInfoText>Olá, </UserInfoText>
           <UserInfoText style={{ fontFamily: theme.fonts.bold }}>
-            {user.display_name}
+            {user?.display_name}
           </UserInfoText>
         </UserInfo>
 
