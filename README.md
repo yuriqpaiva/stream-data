@@ -17,8 +17,8 @@
 <br/>
 
 <div align="center">
-<img align="center" src="https://i.ibb.co/xHVz3B3/My-project-1-1.jpg" with="400px" height="400px" />
-<img align="center" src="https://i.ibb.co/R3rvLpk/My-project-1.jpg" with="400px" height="400px" />
+<img align="center" src="./src/assets/images/app-signin.jpg" with="400px" height="400px" />
+<img align="center" src="./src/assets/images/app-home.jpg" with="400px" height="400px" />
 </div>
 
 ## 💡 Introduction
