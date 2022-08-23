@@ -17,8 +17,8 @@
 <br/>
 
 <div align="center">
-<img align="center" src="https://i.ibb.co/S0DQsdW/Simulator-Screen-Shot-i-Phone-13-2022-08-23-at-20-12-41.png" with="300px" height="400px" />
-<img align="center" src="https://i.ibb.co/2d1cpQD/Simulator-Screen-Shot-i-Phone-13-2022-08-23-at-20-12-33.png" with="300px" height="400px" />
+<img align="center" src="https://i.ibb.co/S0DQsdW/Simulator-Screen-Shot-i-Phone-13-2022-08-23-at-20-12-41.png" with="300px" height="350px" />
+<img align="center" src="https://i.ibb.co/2d1cpQD/Simulator-Screen-Shot-i-Phone-13-2022-08-23-at-20-12-33.png" with="300px" height="350px" />
 </div>
 
 ## 💡 Introduction
